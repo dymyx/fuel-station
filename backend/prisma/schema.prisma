@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  OPERATOR
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  email        String        @unique
+  password     String
+  firstName    String
+  lastName     String
+  role         Role          @default(OPERATOR)
+  transactions Transaction[]
+  createdAt    DateTime      @default(now())
+}
+
+model Fuel {
+  id            Int           @id @default(autoincrement())
+  brand         String        @unique
+  pricePerLiter Float
+  stockQuantity Float
+  transactions  Transaction[]
+  updatedAt     DateTime      @updatedAt
+}
+
+model Transaction {
+  id         Int      @id @default(autoincrement())
+  fuelId     Int
+  fuel       Fuel     @relation(fields: [fuelId], references: [id])
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  litres     Float
+  totalPrice Float
+  pumpNumber Int
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([fuelId])
+  @@index([userId])
+}
