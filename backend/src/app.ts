@@ -6,18 +6,20 @@ import rootRouter from './routes'
 
 const app = express()
 
+const allowedOrigins = process.env.CORS_ORIGIN
+	? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
+	: ['http://localhost:5173']
+
 app.use(
 	cors({
-		origin: 'http://localhost:5173',
+		origin: allowedOrigins,
 		methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 		allowedHeaders: ['Content-Type', 'Authorization']
 	})
 )
 
 app.use(express.json())
-app.use('/', rootRouter)
+app.use('/api', rootRouter)
 app.use(errorHandler)
 
-app.listen(3000, () => {
-	console.log('Server is running on port 3000')
-})
+export default app
