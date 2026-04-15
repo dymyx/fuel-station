@@ -19,7 +19,7 @@ app.use(
 )
 
 app.use(express.json())
-app.use('/api', rootRouter)
+app.use('/', rootRouter)
 app.use(errorHandler)
 
 export default app
